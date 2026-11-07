@@ -1,0 +1,130 @@
+/* Admin panel — sayt tokenlaridan foydalanadi (yorugʻ/tungi rejim) */
+.adm{min-height:100vh;background:var(--bg-soft);color:var(--ink);font-family:var(--sans);font-size:14px}
+.adm *{box-sizing:border-box}
+.adm h1,.adm h2,.adm h3{font-family:var(--serif);color:var(--navy);margin:0}
+.adm code{font-size:.92em;background:var(--bg-card);border:1px solid var(--line);padding:1px 5px;border-radius:4px}
+.adm-brand{display:flex;align-items:center;gap:10px;color:var(--navy)}
+.adm-brand svg{width:54px;height:auto}
+.adm-brand b{display:block;font-family:var(--serif);font-weight:800;font-size:16px;line-height:1}
+.adm-brand small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:3px;font-weight:600}
+
+.adm-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--navy);font:600 13px var(--sans);cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,box-shadow .15s}
+.adm-btn:hover:not(:disabled){border-color:var(--gold-2)}
+.adm-btn:disabled{opacity:.5;cursor:default}
+.adm-btn.primary{background:var(--btn-bg);border-color:var(--btn-bg);color:var(--btn-fg)}
+.adm-btn.primary:hover:not(:disabled){background:var(--btn-bg-h);border-color:var(--btn-bg-h)}
+.adm-btn.ghost{background:transparent}
+.adm-btn.danger{background:#b3261e;border-color:#b3261e;color:#fff}
+.adm-icon{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer;font-size:14px}
+.adm-icon:hover:not(:disabled){color:var(--navy);border-color:var(--gold-2)}
+.adm-icon:disabled{opacity:.35;cursor:default}
+
+/* Kirish */
+.adm-login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(ellipse at 30% 0%,color-mix(in srgb,var(--gold) 12%,transparent),transparent 55%),var(--bg-soft)}
+.adm-login-card{width:min(400px,100%);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px 28px;box-shadow:var(--shadow-h);display:flex;flex-direction:column;gap:10px}
+.adm-login-card h1{font-size:24px;margin:14px 0 6px}
+.adm-login-card label{font-size:13px;font-weight:600;color:var(--muted)}
+.adm-login-card input{height:44px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);padding:0 12px;font-size:15px}
+.adm-login-card input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 20%,transparent)}
+.adm-login-card .adm-btn{height:44px;margin-top:6px;font-size:14px}
+.adm-back{font-size:13px;color:var(--muted);text-align:center;margin-top:6px}
+.adm-back:hover{color:var(--gold)}
+.adm-error,.adm-ferr{color:#c0392b;font-size:13px;margin:0}
+:root[data-theme="dark"] .adm-error,:root[data-theme="dark"] .adm-ferr{color:#ff8a7a}
+.adm-alert{margin:0 0 12px;padding:10px 12px;border-radius:9px;background:color-mix(in srgb,var(--gold) 14%,var(--card));border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);color:var(--ink);font-size:13px;line-height:1.5}
+
+/* Qobiq */
+.adm-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:12px max(20px,env(safe-area-inset-left,0px));background:var(--card);border-bottom:1px solid var(--line)}
+.adm-status{flex:1;font-size:13px;color:var(--muted)}
+.adm-status .dot{display:inline-flex;align-items:center;gap:8px}
+.adm-status .dot::before{content:"";width:8px;height:8px;border-radius:50%;background:#2e9e5b}
+.adm-status .dot.warn::before{background:var(--gold)}
+.adm-top-actions{display:flex;gap:8px;align-items:center}
+.adm-top-actions form{margin:0}
+.adm-banner{margin:14px 20px 0;padding:12px 14px;border-radius:10px;background:color-mix(in srgb,#c0392b 10%,var(--card));border:1px solid color-mix(in srgb,#c0392b 35%,transparent);font-size:13.5px;line-height:1.5}
+.adm-body{display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px;padding:20px;max-width:1280px;margin:0 auto}
+.adm-side{display:flex;flex-direction:column;gap:2px;position:sticky;top:76px;align-self:start}
+.adm-side button{display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;padding:10px 12px;border:0;border-radius:9px;background:none;color:var(--ink);font:500 14px var(--sans);cursor:pointer}
+.adm-side button:hover{background:var(--card)}
+.adm-side button.on{background:var(--card);color:var(--navy);font-weight:700;box-shadow:inset 3px 0 0 var(--gold),var(--card-shadow)}
+.adm-side .cnt{font-size:11.5px;font-weight:700;color:var(--muted);background:var(--bg-card);border-radius:20px;padding:1px 8px}
+.adm-main{min-width:0}
+.adm-panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+.adm-panel.narrow>*{max-width:720px}
+.adm-panel h2{font-size:22px}
+.adm-panel h3{font-size:17px;margin:20px 0 4px}
+.adm-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.adm-sub{margin:4px 0 16px;color:var(--muted);font-size:13.5px;line-height:1.5}
+.adm-panel-head .adm-sub{margin-bottom:0}
+.adm-empty{color:var(--muted);padding:24px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.adm-muted{color:var(--muted)}
+
+/* Roʻyxat */
+.adm-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.adm-list>li{border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.adm-list>li.open{border-color:var(--gold-2);box-shadow:var(--card-shadow)}
+.adm-list>li.invalid{border-color:color-mix(in srgb,#c0392b 55%,transparent)}
+.adm-item{display:flex;align-items:center;gap:12px;padding:8px 10px}
+.adm-item-thumb{width:48px;height:48px;border-radius:8px;background:var(--bg-card);flex:none;overflow:hidden}
+.adm-item-thumb img{width:100%;height:100%;object-fit:cover}
+.adm-item-main{flex:1;min-width:0;text-align:left;border:0;background:none;padding:4px 0;cursor:pointer;color:inherit}
+.adm-item-main b{display:block;font-family:var(--serif);font-size:15px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adm-item-main span{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adm-item-actions{display:flex;gap:6px;align-items:center;flex:none}
+.adm-form{padding:16px 16px 18px;border-top:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;gap:14px}
+
+/* Maydonlar */
+.adm-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.adm-label{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+.adm-field input,.adm-field select,.adm-field textarea,.adm-num{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);padding:9px 11px;font:14px var(--sans);line-height:1.5}
+.adm-field textarea{resize:vertical;min-height:70px}
+.adm-field input:focus,.adm-field select:focus,.adm-field textarea:focus,.adm-num:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 18%,transparent)}
+.adm-field.has-error input,.adm-field.has-error textarea,.adm-field.has-error select{border-color:#c0392b}
+.adm-hint{font-size:12px;color:var(--muted)}
+.adm-panel>.adm-field+.adm-field{margin-top:14px}
+.adm-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.adm-grid3{display:grid;grid-template-columns:2fr 1.4fr 1fr;gap:12px}
+.adm-check{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--navy);cursor:pointer}
+.adm-check input{width:18px;height:18px;accent-color:var(--gold)}
+
+/* Yuklash */
+.adm-upload{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.adm-thumb{width:120px;height:84px;border-radius:9px;border:1px solid var(--line);background:var(--bg-card);overflow:hidden;display:grid;place-items:center;flex:none}
+.adm-thumb img{width:100%;height:100%;object-fit:cover}
+.adm-thumb span,.adm-file span{font-size:12px;color:var(--muted)}
+.adm-file{min-width:160px;padding:10px 12px;border:1px dashed var(--line);border-radius:9px}
+.adm-file a{color:var(--navy-2);font-weight:600}
+.adm-upload-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* Hududlar va statistika */
+.adm-table{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.adm-row{display:grid;grid-template-columns:minmax(0,1.3fr) 110px minmax(0,2fr);gap:14px;align-items:center;padding:10px 14px;background:var(--bg)}
+.adm-row+.adm-row{border-top:1px solid var(--line)}
+.adm-rname{font-family:var(--serif);color:var(--navy)}
+.adm-row .adm-thumb{width:84px;height:56px}
+.adm-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.adm-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg);display:flex;flex-direction:column;gap:10px}
+
+/* Tarix */
+.adm-versions{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.adm-versions li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--bg)}
+.adm-versions li+li{border-top:1px solid var(--line)}
+.adm-versions em{margin-left:10px;font-style:normal;font-size:11px;font-weight:700;color:#fff;background:#2e9e5b;border-radius:20px;padding:2px 8px}
+
+.adm-toast{position:fixed;right:20px;bottom:20px;z-index:50;max-width:min(440px,calc(100vw - 40px));padding:12px 16px;border-radius:10px;font-weight:600;font-size:13.5px;box-shadow:var(--shadow-h);animation:pop .18s ease-out}
+.adm-toast.ok{background:#1f7a46;color:#fff}
+.adm-toast.err{background:#b3261e;color:#fff}
+
+@media (max-width:860px){
+  .adm-body{grid-template-columns:minmax(0,1fr);padding:12px}
+  .adm-side{position:static;flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
+  .adm-side button{white-space:nowrap}
+  .adm-top{flex-wrap:wrap}
+  .adm-status{order:3;flex-basis:100%}
+  .adm-item{flex-wrap:wrap}
+  .adm-item-actions{width:100%;justify-content:flex-end}
+  .adm-grid2,.adm-grid3{grid-template-columns:minmax(0,1fr)}
+  .adm-row{grid-template-columns:minmax(0,1fr) 90px}
+  .adm-row .adm-upload,.adm-row .adm-muted{grid-column:1/-1}
+  .adm-panel{padding:16px}
+}
