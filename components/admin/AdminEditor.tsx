@@ -216,8 +216,8 @@ export default function AdminEditor({ initial, versions, storeReady }: { initial
               onChange={(v) => set("people", v)}
               open={open}
               setOpen={setOpen}
-              make={() => ({ slug: "", name: "", field: FIELDS[0].slug, region: REGION_DEFS[0].slug, photo: "", featured: false, bio: "" })}
-              thumb={(p) => p.photo}
+              make={() => ({ slug: "", name: "", field: FIELDS[0].slug, region: REGION_DEFS[0].slug, photo: "", cardImage: "", featured: false, bio: "" })}
+              thumb={(p) => p.photo || p.cardImage}
               primary={(p) => p.name || "Yangi yosh siyosatchi"}
               secondary={(p) => `${fieldBySlug(p.field)?.name ?? ""} · ${regionDef(p.region)?.name ?? ""}${p.featured ? " · ★ bosh sahifada" : ""}`}
               validate={(p) => issuesOf(PersonSchema, p)}
@@ -251,6 +251,13 @@ export default function AdminEditor({ initial, versions, storeReady }: { initial
                   </div>
                   <Field label="Surat" hint="Tavsiya: 4:3 nisbat, kamida 800 px kenglik." error={err.photo}>
                     <Upload value={p.photo} onChange={(v) => up({ photo: v })} disabled={!storeReady} />
+                  </Field>
+                  <Field
+                    label="Toʻliq karta rasmi (ixtiyoriy)"
+                    hint="Yuklansa, karta butunlay shu rasm bilan chiqadi: ism, soha va hudud rasmning oʻzida boʻlishi kerak, sayt faqat oʻng pastdagi tugmani qoʻshadi. Tavsiya etilgan oʻlcham: 868 × 252 px (nisbat 3,44 : 1). Tugma uchun oʻng pastki burchakda ~70 × 70 px boʻsh joy qoldiring."
+                    error={err.cardImage}
+                  >
+                    <Upload value={p.cardImage} onChange={(v) => up({ cardImage: v })} disabled={!storeReady} />
                   </Field>
                   <label className="adm-check">
                     <input type="checkbox" checked={p.featured} onChange={(e) => up({ featured: e.target.checked })} /> Bosh sahifada koʻrsatish

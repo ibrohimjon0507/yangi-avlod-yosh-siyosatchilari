@@ -33,6 +33,8 @@ export const PersonSchema = z.object({
   field: z.enum(fieldSlugs),
   region: z.enum(regionSlugs),
   photo: asset,
+  /** Ixtiyoriy: oʻzingiz tayyorlagan toʻliq karta dizayni (kartani butunlay qoplaydi) */
+  cardImage: asset,
   featured: z.boolean(),
   bio: z.string().trim().max(4000),
 });
@@ -126,10 +128,10 @@ export const DEFAULT_CONTENT: SiteContent = {
     { value: "14", suffix: "", label: "hudud", sub: "Butun Oʻzbekiston boʻylab" },
   ],
   people: [
-    { slug: "jasur-bekmurodov", name: "Jasur Bekmurodov", field: "parlament-va-qonunchilik", region: "toshkent-shahri", photo: "/images/people/jasur-bekmurodov.jpg", featured: true, bio: "" },
-    { slug: "nilufar-abduqodirova", name: "Nilufar Abduqodirova", field: "talim-va-innovatsiya", region: "samarqand-viloyati", photo: "/images/people/nilufar-abduqodirova.jpg", featured: true, bio: "" },
-    { slug: "alisher-karimov", name: "Alisher Karimov", field: "davlat-boshqaruvi", region: "buxoro-viloyati", photo: "/images/people/alisher-karimov.jpg", featured: true, bio: "" },
-    { slug: "sevara-ismoilova", name: "Sevara Ismoilova", field: "ekologiya", region: "toshkent-viloyati", photo: "/images/people/sevara-ismoilova.jpg", featured: true, bio: "" },
+    { slug: "jasur-bekmurodov", name: "Jasur Bekmurodov", field: "parlament-va-qonunchilik", region: "toshkent-shahri", photo: "/images/people/jasur-bekmurodov.jpg", featured: true, bio: "", cardImage: "" },
+    { slug: "nilufar-abduqodirova", name: "Nilufar Abduqodirova", field: "talim-va-innovatsiya", region: "samarqand-viloyati", photo: "/images/people/nilufar-abduqodirova.jpg", featured: true, bio: "", cardImage: "" },
+    { slug: "alisher-karimov", name: "Alisher Karimov", field: "davlat-boshqaruvi", region: "buxoro-viloyati", photo: "/images/people/alisher-karimov.jpg", featured: true, bio: "", cardImage: "" },
+    { slug: "sevara-ismoilova", name: "Sevara Ismoilova", field: "ekologiya", region: "toshkent-viloyati", photo: "/images/people/sevara-ismoilova.jpg", featured: true, bio: "", cardImage: "" },
   ],
   ideas: [
     { text: "2030-yilga borib Oʻzbekiston Markaziy Osiyoda yoshlar imkoniyatlari boʻyicha eng yetakchi davlatga aylanadi.", author: "Javohir Rahimov", field: "diplomatiya", avatar: "/images/people/javohir-rahimov.jpg" },
@@ -179,7 +181,7 @@ export function migrate(raw: unknown): SiteContent {
     ...r,
     site: { ...DEFAULT_CONTENT.site, ...(r.site ?? {}) },
     book: { ...DEFAULT_CONTENT.book, ...(r.book ?? {}) },
-    people: ((r.people ?? DEFAULT_CONTENT.people) as Partial<Person>[]).map((p) => ({ bio: "", featured: false, ...p })),
+    people: ((r.people ?? DEFAULT_CONTENT.people) as Partial<Person>[]).map((p) => ({ bio: "", featured: false, cardImage: "", ...p })),
     initiatives: ((r.initiatives ?? DEFAULT_CONTENT.initiatives) as Partial<Initiative>[]).map((i) => ({ body: "", ...i })),
     regions: REGION_DEFS.map((d) => {
       const x = (r.regions ?? DEFAULT_CONTENT.regions).find((y) => y.slug === d.slug);
