@@ -235,4 +235,5 @@ img{max-width:100%}
 .person.person-full:hover img{transform:scale(1.02)}
 .person.person-full .circle-arrow{z-index:1;background:#fff;box-shadow:0 2px 8px -2px rgba(15,42,107,.35)}
 .person.person-full:hover .circle-arrow{background:var(--gold);color:#fff}
-.people-grid .person.person-full{aspect-ratio:217/63;min-height:0}
+/* Doimiy nisbat 868:252 — rasm hech qaysi ekranda kesilmaydi */
+.person.person-full,.people-grid .person.person-full{aspect-ratio:868/252;min-height:0;height:auto;align-self:start}
