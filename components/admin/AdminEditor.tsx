@@ -5,13 +5,14 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { logoutAction, restoreAction, saveAction } from "@/app/admin/actions";
 import { FIELDS, REGION_DEFS, REGION_DEFS_ALPHA, fieldBySlug, regionDef, slugify } from "@/lib/data";
-import { IdeaSchema, InitiativeSchema, PersonSchema, type Idea, type Initiative, type Person, type SiteContent } from "@/lib/content";
+import { DEFAULT_HERO_IMAGE, HeroSchema, IdeaSchema, InitiativeSchema, PersonSchema, type Hero, type Idea, type Initiative, type Person, type SiteContent } from "@/lib/content";
 import type { Version } from "@/lib/store";
 import { Emblem } from "../Icons";
 
-type Tab = "people" | "initiatives" | "ideas" | "regions" | "stats" | "book" | "settings" | "history";
+type Tab = "hero" | "people" | "initiatives" | "ideas" | "regions" | "stats" | "book" | "settings" | "history";
 
 const TABS: { id: Tab; label: string }[] = [
+  { id: "hero", label: "Bosh qism (Hero)" },
   { id: "people", label: "Yosh siyosatchilar" },
   { id: "initiatives", label: "Tashabbuslar" },
   { id: "ideas", label: "2030 gʻoyalari" },
@@ -128,7 +129,7 @@ function move<T>(arr: T[], i: number, d: -1 | 1) {
 export default function AdminEditor({ initial, versions, storeReady }: { initial: SiteContent; versions: Version[]; storeReady: boolean }) {
   const [c, setC] = useState<SiteContent>(initial);
   const [saved, setSaved] = useState(JSON.stringify(initial));
-  const [tab, setTab] = useState<Tab>("people");
+  const [tab, setTab] = useState<Tab>("hero");
   const [open, setOpen] = useState<number | null>(null);
   const [toast, setToast] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
   const [pending, start] = useTransition();
@@ -208,6 +209,8 @@ export default function AdminEditor({ initial, versions, storeReady }: { initial
         </nav>
 
         <section className="adm-main">
+          {tab === "hero" && <HeroEditor hero={c.hero} onChange={(v) => set("hero", v)} site={c.site} onSite={(v) => set("site", v)} storeReady={storeReady} goStats={() => setTab("stats")} />}
+
           {tab === "people" && (
             <ListEditor<Person>
               title="Yosh siyosatchilar"
@@ -444,12 +447,7 @@ export default function AdminEditor({ initial, versions, storeReady }: { initial
               <Field label="Aloqa uchun email">
                 <input type="email" value={c.site.email} onChange={(e) => set("site", { ...c.site, email: e.target.value })} />
               </Field>
-              <Field label="Bosh sahifadagi iqtibos" hint="Qoʻshtirnoqlarsiz yozing.">
-                <textarea rows={3} value={c.site.quoteText} onChange={(e) => set("site", { ...c.site, quoteText: e.target.value })} />
-              </Field>
-              <Field label="Iqtibos muallifi">
-                <input value={c.site.quoteAuthor} onChange={(e) => set("site", { ...c.site, quoteAuthor: e.target.value })} />
-              </Field>
+              <p className="adm-sub">Bosh sahifadagi iqtibos “Bosh qism (Hero)” boʻlimiga koʻchirildi.</p>
               <h3>Ijtimoiy tarmoqlar</h3>
               <p className="adm-sub">Toʻliq havolani kiriting (https:// bilan). Boʻsh qolganlari saytda faol boʻlmaydi.</p>
               {(["telegram", "instagram", "youtube", "facebook"] as const).map((k) => (
@@ -481,6 +479,135 @@ export default function AdminEditor({ initial, versions, storeReady }: { initial
           {toast.text}
         </div>
       )}
+    </div>
+  );
+}
+
+/* ---------------- Bosh qism (Hero) ---------------- */
+
+function SizeNote({ rows }: { rows: [string, string][] }) {
+  return (
+    <dl className="adm-size">
+      {rows.map(([k, v]) => (
+        <div key={k}>
+          <dt>{k}</dt>
+          <dd>{v}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function HeroEditor({ hero: h, onChange, site, onSite, storeReady, goStats }: { hero: Hero; onChange: (v: Hero) => void; site: SiteContent["site"]; onSite: (v: SiteContent["site"]) => void; storeReady: boolean; goStats: () => void }) {
+  const up = (patch: Partial<Hero>) => onChange({ ...h, ...patch });
+  const err = issuesOf(HeroSchema, h);
+  const desktop = h.image || DEFAULT_HERO_IMAGE;
+  return (
+    <div className="adm-panel narrow">
+      <h2>Bosh qism (Hero)</h2>
+      <p className="adm-sub">
+        Bosh sahifaning eng yuqorisidagi katta blok: fon rasmi, sarlavhalar, shiorlar, tugmalar va iqtibos. Ostidagi toʻrtta raqam —{" "}
+        <button type="button" className="adm-linkbtn" onClick={goStats}>
+          “Statistika”
+        </button>{" "}
+        boʻlimida.
+      </p>
+
+      <h3>Jonli koʻrinish</h3>
+      <div className="adm-hero-prev" style={{ backgroundImage: `url("${desktop}")` }}>
+        <div className="adm-hero-safe" aria-hidden="true" />
+        <div className="adm-hero-txt">
+          {h.eyebrow && <small>{h.eyebrow}</small>}
+          <b>{h.title || "…"}</b>
+          {h.subtitle && <em>{h.subtitle}</em>}
+          {h.motto.length > 0 && <span className="m">{h.motto.join(" • ")}</span>}
+          <span className="btns">
+            <i className="p">{h.primaryLabel || "…"} →</i>
+            {h.secondaryLabel && <i>{h.secondaryLabel} ▷</i>}
+          </span>
+        </div>
+        <div className="adm-hero-q">“{site.quoteText}”</div>
+      </div>
+      <p className="adm-hint">Kompyuterda rasm 6 : 1 nisbatli tasma koʻrinishida chiqadi. Chap tomondagi xira maydonda matn turadi, oʻng tomonda iqtibos.</p>
+
+      <h3>Fon rasmi — kompyuter</h3>
+      <SizeNote
+        rows={[
+          ["Oʻlcham", "2560 × 428 px (eng yaxshi sifat)"],
+          ["Eng kami", "1920 × 321 px"],
+          ["Nisbat", "≈ 6 : 1 (kenglik balandlikdan 6 marta katta)"],
+          ["Format", "JPG yoki WEBP, 600 KB gacha tavsiya, 30 MB gacha qabul qilinadi"],
+          ["Muhim joy", "Asosiy obyekt (bino, odam) rasmning oʻrtasi va oʻng qismida boʻlsin. Chap 45% matn ostida qoladi — u yer ochiq, osoyishta fon boʻlsin."],
+          ["Kesilish", "Rasm ekranga “cover” usulida joylanadi: tepasi saqlanadi, ortiqcha pastki qismi kesilishi mumkin."],
+        ]}
+      />
+      <Field label="Kompyuter rasmi" hint={h.image ? "" : "Hozir standart rasm ishlatilmoqda (2560 × 428 px). Yangisini yuklasangiz, u almashtiriladi."} error={err.image}>
+        <Upload value={h.image} onChange={(v) => up({ image: v })} disabled={!storeReady} />
+      </Field>
+
+      <h3>Fon rasmi — telefon (ixtiyoriy)</h3>
+      <SizeNote
+        rows={[
+          ["Oʻlcham", "1080 × 1350 px (tik, 4 : 5)"],
+          ["Eng kami", "750 × 940 px"],
+          ["Qachon chiqadi", "Ekran kengligi 980 px va undan kichik boʻlganda (telefon, planshet)"],
+          ["Muhim joy", "Asosiy obyektni markazga va yuqori yarmiga joylang — pastki qismida tugmalar turadi."],
+          ["Yuklanmasa", "Telefonda ham kompyuter rasmi ishlatiladi (oʻrta-oʻng qismi koʻrinadi)."],
+        ]}
+      />
+      <Field label="Telefon rasmi" error={err.imageMobile}>
+        <Upload value={h.imageMobile} onChange={(v) => up({ imageMobile: v })} disabled={!storeReady} />
+      </Field>
+
+      <h3>Matnlar</h3>
+      <Field label="Kichik sarlavha (yuqorida)" hint="Masalan: Yangi Oʻzbekiston — Yangi avlod. Boʻsh qoldirilsa chiqmaydi." error={err.eyebrow}>
+        <input value={h.eyebrow} maxLength={80} onChange={(e) => up({ eyebrow: e.target.value })} />
+      </Field>
+      <Field label="Katta sarlavha" hint="Tavsiya: 14 belgigacha — bir qatorga sigʻadi." error={err.title}>
+        <input value={h.title} maxLength={40} onChange={(e) => up({ title: e.target.value })} />
+      </Field>
+      <Field label="Ostki sarlavha (oltin rang)" hint="Boʻsh qoldirilsa chiqmaydi." error={err.subtitle}>
+        <input value={h.subtitle} maxLength={60} onChange={(e) => up({ subtitle: e.target.value })} />
+      </Field>
+      <Field label="Shiorlar" hint="Har bir shior alohida qatorda. 5 tagacha. Oralariga • belgisi oʻzi qoʻyiladi." error={err.motto}>
+        <textarea
+          rows={3}
+          value={h.motto.join("\n")}
+          onChange={(e) =>
+            up({
+              motto: e.target.value
+                .split("\n")
+                .map((x) => x.trimStart())
+                .slice(0, 5),
+            })
+          }
+          onBlur={() => up({ motto: h.motto.map((x) => x.trim()).filter(Boolean) })}
+        />
+      </Field>
+
+      <h3>Tugmalar</h3>
+      <div className="adm-grid2">
+        <Field label="1-tugma (koʻk) matni" error={err.primaryLabel}>
+          <input value={h.primaryLabel} maxLength={40} onChange={(e) => up({ primaryLabel: e.target.value })} />
+        </Field>
+        <Field label="1-tugma havolasi" hint="Masalan: /yosh-siyosatchilar" error={err.primaryHref}>
+          <input value={h.primaryHref} onChange={(e) => up({ primaryHref: e.target.value })} />
+        </Field>
+        <Field label="2-tugma (oq) matni" hint="Boʻsh qoldirilsa tugma chiqmaydi." error={err.secondaryLabel}>
+          <input value={h.secondaryLabel} maxLength={40} onChange={(e) => up({ secondaryLabel: e.target.value })} />
+        </Field>
+        <Field label="2-tugma havolasi" hint="Masalan: /loyiha-haqida" error={err.secondaryHref}>
+          <input value={h.secondaryHref} onChange={(e) => up({ secondaryHref: e.target.value })} />
+        </Field>
+      </div>
+
+      <h3>Iqtibos (oʻng tomonda)</h3>
+      <Field label="Iqtibos matni" hint="Qoʻshtirnoqlarsiz yozing. Tavsiya: 110 belgigacha — 3 qatorga sigʻadi.">
+        <textarea rows={3} value={site.quoteText} onChange={(e) => onSite({ ...site, quoteText: e.target.value })} />
+      </Field>
+      <Field label="Iqtibos muallifi">
+        <input value={site.quoteAuthor} onChange={(e) => onSite({ ...site, quoteAuthor: e.target.value })} />
+      </Field>
     </div>
   );
 }

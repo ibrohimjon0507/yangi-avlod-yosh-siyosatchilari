@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FIELDS, SITE } from "@/lib/data";
-import { regionsOf, type SiteContent } from "@/lib/content";
+import { FIELDS } from "@/lib/data";
+import { DEFAULT_HERO_IMAGE, regionsOf, type SiteContent } from "@/lib/content";
 import { getContent } from "@/lib/store";
 import { COUNTRY_OUTLINE } from "@/lib/uzmap";
 import { ArrowRight, Chevron, FieldGlyph, Play, QuoteMark, StatIcon } from "@/components/Icons";
@@ -10,29 +10,36 @@ import PeopleSection from "@/components/home/PeopleSection";
 import { HomeRegions } from "@/components/UzMap";
 
 function Hero({ c }: { c: SiteContent }) {
+  const h = c.hero;
+  const desktop = h.image || DEFAULT_HERO_IMAGE;
   return (
     <section className="hero" aria-labelledby="h-hero">
-      <Image className="hero-bg" src="/images/hero.jpg" alt="" fill priority quality={85} sizes="100vw" />
+      <Image className={`hero-bg${h.imageMobile ? " hero-bg-d" : ""}`} src={desktop} alt="" fill priority quality={85} sizes="100vw" />
+      {h.imageMobile && <Image className="hero-bg hero-bg-m" src={h.imageMobile} alt="" fill priority quality={85} sizes="100vw" />}
       <div className="wrap">
         <div className="hero-text">
-          <p className="eyebrow">{SITE.eyebrow}</p>
-          <h1 id="h-hero">YANGI AVLOD</h1>
-          <p className="sub">Yosh siyosatchilar</p>
-          <p className="values">
-            {SITE.motto.map((m, i) => (
-              <span key={m}>
-                {i > 0 && <i aria-hidden="true">•</i>}
-                {m}
-              </span>
-            ))}
-          </p>
+          {h.eyebrow && <p className="eyebrow">{h.eyebrow}</p>}
+          <h1 id="h-hero">{h.title}</h1>
+          {h.subtitle && <p className="sub">{h.subtitle}</p>}
+          {h.motto.length > 0 && (
+            <p className="values">
+              {h.motto.map((m, i) => (
+                <span key={i}>
+                  {i > 0 && <i aria-hidden="true">•</i>}
+                  {m}
+                </span>
+              ))}
+            </p>
+          )}
           <div className="cta">
-            <Link className="btn btn-primary" href="/yosh-siyosatchilar">
-              Shaxslarni koʻrish <ArrowRight className="arrow" />
+            <Link className="btn btn-primary" href={h.primaryHref}>
+              {h.primaryLabel} <ArrowRight className="arrow" />
             </Link>
-            <Link className="btn btn-ghost" href="/loyiha-haqida">
-              Loyiha haqida <Play className="play" />
-            </Link>
+            {h.secondaryLabel && (
+              <Link className="btn btn-ghost" href={h.secondaryHref}>
+                {h.secondaryLabel} <Play className="play" />
+              </Link>
+            )}
           </div>
         </div>
         <blockquote className="hero-quote">

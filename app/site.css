@@ -92,6 +92,7 @@ nav.main a.active::after{transform:scaleX(1)}
 /* ===== Hero ===== */
 .hero{position:relative;background:#e4eef9;height:calc(214 * var(--u));overflow:hidden;isolation:isolate}
 .hero-bg{z-index:-2;object-fit:cover;object-position:center top;filter:var(--hero-img-filter)}
+.hero-bg-m{display:none}
 :root[data-theme="dark"] .hero{background:#0b1730}
 .hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--hero-veil)}
 .hero .wrap{position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding-block:calc(25 * var(--u)) calc(34 * var(--u))}
@@ -310,6 +311,8 @@ footer.site{position:relative;z-index:3}
   .init p{padding-right:30px}
   .hero{height:auto}
   .hero-bg{object-position:62% top}
+  .hero-bg-d{display:none}
+  .hero-bg-m{display:block;object-position:center top}
   .hero h1{font-size:44px}
   .hero .sub{font-size:28px;margin-left:2px}
   .hero .values{margin-left:2px}

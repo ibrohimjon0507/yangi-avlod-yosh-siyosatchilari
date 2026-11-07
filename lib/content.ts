@@ -63,6 +63,28 @@ export const RegionDataSchema = z.object({
   image: asset,
 });
 
+/** Bosh sahifaning yuqori qismi (hero) — rasm, sarlavhalar, shiorlar va tugmalar */
+const link = z
+  .string()
+  .trim()
+  .max(300)
+  .refine((v) => v.startsWith("/") || v.startsWith("#") || /^https:\/\/[^\s]+$/.test(v), "Havola “/” yoki https:// bilan boshlanishi kerak");
+
+export const HeroSchema = z.object({
+  /** Kompyuter uchun fon rasmi (boʻsh boʻlsa — standart rasm) */
+  image: asset,
+  /** Telefon uchun alohida fon rasmi (ixtiyoriy) */
+  imageMobile: asset,
+  eyebrow: z.string().trim().max(80),
+  title: text(40, 2, "Katta sarlavha"),
+  subtitle: z.string().trim().max(60),
+  motto: z.array(z.string().trim().min(1, "Shior boʻsh boʻlmasin").max(30, "Shior juda uzun")).max(5),
+  primaryLabel: text(40, 2, "1-tugma matni"),
+  primaryHref: link,
+  secondaryLabel: z.string().trim().max(40),
+  secondaryHref: link,
+});
+
 export const StatSchema = z.object({
   value: text(10, 1, "Qiymat"),
   suffix: z.string().trim().max(3),
@@ -82,6 +104,7 @@ export const ContentSchema = z
       youtube: url,
       facebook: url,
     }),
+    hero: HeroSchema,
     stats: z.array(StatSchema).length(4),
     people: z.array(PersonSchema).max(1000),
     ideas: z.array(IdeaSchema).max(500),
@@ -107,6 +130,10 @@ export type Person = z.infer<typeof PersonSchema>;
 export type Idea = z.infer<typeof IdeaSchema>;
 export type Initiative = z.infer<typeof InitiativeSchema>;
 export type Stat = z.infer<typeof StatSchema>;
+export type Hero = z.infer<typeof HeroSchema>;
+
+/** Hero standart rasmi (public/images/hero.jpg, 2560 × 428 px) */
+export const DEFAULT_HERO_IMAGE = "/images/hero.jpg";
 export type Region = RegionDef & { count: number | null; image: string };
 
 /** Birinchi ishga tushirish uchun standart kontent (maketdagi namunalar) */
@@ -120,6 +147,18 @@ export const DEFAULT_CONTENT: SiteContent = {
     instagram: "",
     youtube: "",
     facebook: "",
+  },
+  hero: {
+    image: "",
+    imageMobile: "",
+    eyebrow: "Yangi Oʻzbekiston — Yangi avlod",
+    title: "YANGI AVLOD",
+    subtitle: "Yosh siyosatchilar",
+    motto: ["Gʻoya", "Masʼuliyat", "Kelajak"],
+    primaryLabel: "Shaxslarni koʻrish",
+    primaryHref: "/yosh-siyosatchilar",
+    secondaryLabel: "Loyiha haqida",
+    secondaryHref: "/loyiha-haqida",
   },
   stats: [
     { value: "100", suffix: "", label: "yosh siyosatchi", sub: "Yangi avlod yetakchilari" },
@@ -180,6 +219,7 @@ export function migrate(raw: unknown): SiteContent {
     ...DEFAULT_CONTENT,
     ...r,
     site: { ...DEFAULT_CONTENT.site, ...(r.site ?? {}) },
+    hero: { ...DEFAULT_CONTENT.hero, ...(r.hero ?? {}) },
     book: { ...DEFAULT_CONTENT.book, ...(r.book ?? {}) },
     people: ((r.people ?? DEFAULT_CONTENT.people) as Partial<Person>[]).map((p) => ({ bio: "", featured: false, cardImage: "", ...p })),
     initiatives: ((r.initiatives ?? DEFAULT_CONTENT.initiatives) as Partial<Initiative>[]).map((i) => ({ body: "", ...i })),

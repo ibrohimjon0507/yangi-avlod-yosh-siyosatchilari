@@ -128,3 +128,24 @@
   .adm-row .adm-upload,.adm-row .adm-muted{grid-column:1/-1}
   .adm-panel{padding:16px}
 }
+
+/* ---- Bosh qism (Hero) tahrirlovchisi ---- */
+.adm-linkbtn{background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit}
+.adm-size{display:grid;gap:0;margin:0 0 12px;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
+.adm-size>div{display:grid;grid-template-columns:150px 1fr;border-top:1px solid var(--line)}
+.adm-size>div:first-child{border-top:0}
+.adm-size dt{padding:8px 12px;font-weight:600;background:var(--bg-card)}
+.adm-size dd{margin:0;padding:8px 12px;line-height:1.45}
+.adm-size>div:first-child dd{font-weight:700}
+.adm-hero-prev{position:relative;aspect-ratio:2560/428;border-radius:10px;overflow:hidden;background:#e4eef9 center top/cover no-repeat;border:1px solid var(--line);container-type:inline-size}
+.adm-hero-safe{position:absolute;inset:0 55% 0 0;background:linear-gradient(90deg,rgba(255,255,255,.55),rgba(255,255,255,0));pointer-events:none}
+.adm-hero-txt{position:absolute;left:6.8%;top:10%;display:flex;flex-direction:column;gap:.4cqw;font-family:Georgia,serif}
+.adm-hero-txt small{font-size:1cqw;letter-spacing:.3em;text-transform:uppercase;color:#2c3c66}
+.adm-hero-txt b{font-size:3.8cqw;line-height:1;color:#0f2a6b}
+.adm-hero-txt em{font-style:normal;font-size:1.86cqw;color:#a47d3c}
+.adm-hero-txt .m{font-size:.9cqw;font-weight:700;color:#a47d3c}
+.adm-hero-txt .btns{display:flex;gap:.8cqw;margin-top:.6cqw}
+.adm-hero-txt .btns i{font-style:normal;font-size:.85cqw;padding:.6cqw 1.2cqw;border-radius:.3cqw;border:1px solid #0f2a6b;color:#0f2a6b;background:#fff}
+.adm-hero-txt .btns i.p{background:#0f2a6b;color:#fff}
+.adm-hero-q{position:absolute;right:4.7%;top:13%;width:14.4%;font:italic .9cqw/1.35 Georgia,serif;color:#1e2b52}
+@media (max-width:640px){.adm-size>div{grid-template-columns:1fr}.adm-size dt{padding-bottom:2px}}
