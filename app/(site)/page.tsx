@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FIELDS } from "@/lib/data";
+import { FIELDS, fieldBySlug } from "@/lib/data";
 import { DEFAULT_HERO_IMAGE, regionsOf, type SiteContent } from "@/lib/content";
 import { getContent } from "@/lib/store";
 import { COUNTRY_OUTLINE } from "@/lib/uzmap";
-import { ArrowRight, Chevron, FieldGlyph, Play, QuoteMark, StatIcon } from "@/components/Icons";
+import { ArrowRight, FieldGlyph, Play, QuoteMark, StatIcon } from "@/components/Icons";
+import PresidentQuotes from "@/components/PresidentQuotes";
 import IdeaCard from "@/components/IdeaCard";
 import PeopleSection from "@/components/home/PeopleSection";
 import { HomeRegions } from "@/components/UzMap";
@@ -100,81 +101,77 @@ function SecHead({ id, title, sub, href, more, inline = false }: { id: string; t
   );
 }
 
-export default async function HomePage() {
-  const c = await getContent();
-  const regions = regionsOf(c);
+function Initiatives({ c }: { c: SiteContent }) {
+  const [lead, ...rest] = c.initiatives.slice(0, 3);
+  if (!lead) return null;
+  const chip = (tone: string, tag: string) => <span className={`chip${tone === "green" ? " green" : ""}`}>{tag}</span>;
   return (
-    <>
-      <Hero c={c} />
-      <Stats c={c} />
-
-      <PeopleSection people={c.people} regions={regions} />
-
-      <div className="wrap row grid-2">
-        <section id="sohalar" aria-labelledby="h-fields">
-          <SecHead id="h-fields" title="Sohalar" sub="Yosh siyosatchilarning asosiy faoliyat yoʻnalishlari" href="/sohalar" more="Barcha sohalar" inline />
-          <div className="fields">
-            {FIELDS.map((f) => (
-              <Link key={f.slug} className="field-tile" href={`/yosh-siyosatchilar?soha=${f.slug}`}>
-                <FieldGlyph icon={f.icon} />
-                <span>{f.label}</span>
-              </Link>
-            ))}
+    <section className="wrap row" id="tashabbuslar" aria-labelledby="h-inits">
+      <SecHead id="h-inits" title="Tashabbuslar banki" sub="Yosh siyosatchilar tomonidan ilgari surilayotgan amaliy loyihalar" href="/tashabbuslar" more="Barcha tashabbuslar" />
+      <div className={`ib${rest.length ? "" : " solo"}`}>
+        <Link className="ib-lead" href={`/tashabbuslar/${lead.slug}`}>
+          <span className="ib-lead-img">
+            <Image src={lead.image || "/images/pattern.jpg"} alt="" fill sizes="(max-width: 980px) 100vw, 30vw" />
+            <span className="ib-badge">Tanlangan tashabbus</span>
+          </span>
+          <div className="ib-lead-body">
+            <div className="ib-meta">
+              {chip(lead.tone, lead.tag)}
+              <span>{fieldBySlug(lead.field)?.name}</span>
+            </div>
+            <h3>{lead.title}</h3>
+            <p>{lead.summary}</p>
+            <span className="ib-go">
+              Batafsil <ArrowRight />
+            </span>
           </div>
-        </section>
-
-        <section id="g-oyalar-2030" aria-labelledby="h-ideas">
-          <SecHead id="h-ideas" title="2030 — Mening Oʻzbekistonim" sub="Yosh siyosatchilarning kelajak haqidagi gʻoyalari" href="/2030" more="Barcha gʻoyalar" />
-          <div className="ideas">
-            {c.ideas.slice(0, 3).map((idea) => (
-              <IdeaCard key={idea.author} idea={idea} />
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <div className="wrap row grid-2">
-        <section id="tashabbuslar" aria-labelledby="h-inits">
-          <SecHead id="h-inits" title="Tashabbuslar banki" sub="Yosh siyosatchilar tomonidan ilgari surilayotgan amaliy loyihalar" href="/tashabbuslar" more="Barcha tashabbuslar" />
-          <div className="inits">
-            {c.initiatives.slice(0, 3).map((it) => (
-              <Link key={it.slug} className="init" href={`/tashabbuslar/${it.slug}`}>
-                <Image src={it.image || "/images/placeholder-person.svg"} alt="" width={240} height={232} sizes="(max-width: 980px) 30vw, 8vw" />
-                <div className="body">
-                  <span className={`chip${it.tone === "green" ? " green" : ""}`}>{it.tag}</span>
+        </Link>
+        {rest.length > 0 && (
+          <div className="ib-side">
+            {rest.map((it, k) => (
+              <Link key={it.slug} className="ib-card" href={`/tashabbuslar/${it.slug}`}>
+                <span className="ib-img">
+                  <Image src={it.image || "/images/pattern.jpg"} alt="" fill sizes="(max-width: 640px) 40vw, 16vw" />
+                </span>
+                <div className="ib-body">
+                  <span className="ib-num" aria-hidden="true">
+                    {String(k + 2).padStart(2, "0")}
+                  </span>
+                  {chip(it.tone, it.tag)}
                   <h3>{it.title}</h3>
                   <p>{it.summary}</p>
+                  <span className="ib-go">
+                    Batafsil <ArrowRight />
+                  </span>
                 </div>
-                <span className="circle-arrow" aria-hidden="true">
-                  <Chevron />
-                </span>
               </Link>
             ))}
           </div>
-        </section>
-
-        <section id="hududlar" aria-labelledby="h-regions">
-          <SecHead id="h-regions" title="Hududlar xaritasi" sub="Butun Oʻzbekiston boʻylab yosh siyosatchilar" href="/hududlar" more="Barcha hududlar" />
-          <HomeRegions regions={regions} />
-        </section>
+        )}
       </div>
+    </section>
+  );
+}
 
-      <section className="wrap row book-row" id="kitob" aria-labelledby="h-book">
-        <div className="intro">
-          <h2 id="h-book">Kitob</h2>
-          <p className="lead">{c.book.lead}</p>
-        </div>
-        <div className="book-img">
-          <Image src="/images/book.jpg" alt="“Yangi Avlod: Yosh siyosatchilar” albom-kitobi" width={1304} height={368} sizes="(max-width: 980px) 100vw, 26vw" />
-          <div className="ctitle" aria-hidden="true">
-            YANGI
-            <br />
-            AVLOD
-            <small>Yosh siyosatchilar</small>
+function Book({ c }: { c: SiteContent }) {
+  const q = c.book.quote;
+  return (
+    <section className="wrap row" id="kitob" aria-labelledby="h-book">
+      <SecHead id="h-book" title="Kitob" sub={c.book.lead} href="/kitob" more="Kitob sahifasi" />
+      <div className="bk">
+        <div className="bk-stage">
+          <div className="book-img">
+            <Image src="/images/book.jpg" alt="“Yangi Avlod: Yosh siyosatchilar” albom-kitobi" width={1304} height={368} sizes="(max-width: 980px) 100vw, 50vw" />
+            <div className="ctitle" aria-hidden="true">
+              YANGI
+              <br />
+              AVLOD
+              <small>Yosh siyosatchilar</small>
+            </div>
           </div>
         </div>
-        <div className="album">
-          <small>Albom-kitob</small>
+        <div className="bk-text">
+          <small className="bk-kicker">Albom-kitob</small>
           <h3>
             YANGI AVLOD:
             <em>
@@ -182,6 +179,9 @@ export default async function HomePage() {
             </em>
           </h3>
           <p>{c.book.description}</p>
+          <blockquote className="bk-quote">
+            <QuoteMark className="qm" />“{q}”
+          </blockquote>
           <div className="btns">
             <Link className="btn btn-primary" href="/kitob">
               Kitobni koʻrish <ArrowRight className="arrow" />
@@ -191,32 +191,60 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
-        <div className="book-quote">
-          <div className="orn" aria-hidden="true" />
-          <QuoteMark className="qm" />
-          <svg className="bld" viewBox="0 0 160 80" fill="none" stroke="currentColor" strokeWidth={1} aria-hidden="true">
-            <path d="M4 79h152M10 75h140M14 71h132M18 34h124v37M14 34l66-16 66 16M80 18V4" />
-            <path d="M26 37v34M38 37v34M50 37v34M62 37v34M74 37v34M86 37v34M98 37v34M110 37v34M122 37v34M134 37v34" />
-          </svg>
-          <p>
-            {(() => {
-              // Maketdagi qator boʻlinishini saqlash: "...katta" dan keyin yangi qator
-              const q = c.book.quote;
-              const i = q.indexOf(" katta ");
-              return i > 0 ? (
-                <>
-                  “{q.slice(0, i + 6)}
-                  <br />
-                  {q.slice(i + 7)}”
-                </>
-              ) : (
-                <>“{q}”</>
-              );
-            })()}
-          </p>
-          <hr />
+      </div>
+    </section>
+  );
+}
+
+export default async function HomePage() {
+  const c = await getContent();
+  const regions = regionsOf(c);
+  return (
+    <>
+      <Hero c={c} />
+      <Stats c={c} />
+
+      <section className="wrap row" id="sohalar" aria-labelledby="h-fields">
+        <SecHead id="h-fields" title="Sohalar" sub="Yosh siyosatchilarning asosiy faoliyat yoʻnalishlari" href="/sohalar" more="Barcha sohalar" inline />
+        <div className="fields fields-wide">
+          {FIELDS.map((f) => (
+            <Link key={f.slug} className="field-tile" href={`/yosh-siyosatchilar?soha=${f.slug}`}>
+              <FieldGlyph icon={f.icon} />
+              <span>{f.label}</span>
+            </Link>
+          ))}
         </div>
       </section>
+
+      <section className="wrap row" id="mening-ozbekistonim" aria-labelledby="h-ideas">
+        <SecHead id="h-ideas" title="Mening Oʻzbekistonim" sub="Davlat rahbarining fikrlari va yosh siyosatchilarning kelajak haqidagi gʻoyalari" href="/mening-ozbekistonim" more="Barcha gʻoyalar" />
+        <PresidentQuotes president={c.president} />
+        {c.ideas.length > 0 && (
+          <>
+            <h3 className="sub-head">Yosh siyosatchilar gʻoyalari</h3>
+            <div className="ideas ideas-wide">
+              {c.ideas.slice(0, 3).map((idea, k) => (
+                <IdeaCard key={`${idea.author}-${k}`} idea={idea} />
+              ))}
+            </div>
+          </>
+        )}
+      </section>
+
+      <PeopleSection people={c.people} regions={regions} />
+
+      <Initiatives c={c} />
+
+      {c.sections.map && (
+        <section className="row regions-band" id="hududlar" aria-labelledby="h-regions">
+          <div className="wrap">
+            <SecHead id="h-regions" title="Hududlar xaritasi" sub="Butun Oʻzbekiston boʻylab yosh siyosatchilar" href="/hududlar" more="Barcha hududlar" />
+            <HomeRegions regions={regions} />
+          </div>
+        </section>
+      )}
+
+      {c.sections.book && <Book c={c} />}
     </>
   );
 }

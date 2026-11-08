@@ -1,22 +1,24 @@
 import Link from "next/link";
-import { NAV, SITE } from "@/lib/data";
-import { Emblem, Mail, SocialIcon } from "./Icons";
+import { Mail, SocialIcon } from "./Icons";
+import BrandMark from "./BrandMark";
 
 type Social = { name: string; icon: string; href: string };
+type NavItem = { href: string; label: string };
 
-export default function Footer({ email, socials }: { email: string; socials: readonly Social[] }) {
+export default function Footer({ email, socials, nav, creatorName, creatorUrl }: { email: string; socials: readonly Social[]; nav: readonly NavItem[]; creatorName: string; creatorUrl: string }) {
+  const year = new Date().getFullYear();
   return (
     <footer className="site">
       <div className="wrap">
         <Link className="brand" href="/" aria-label="Yangi Avlod — bosh sahifa">
-          <Emblem gradientId="lg-f" />
+          <BrandMark />
           <span>
             <b>YANGI AVLOD</b>
             <small>YOSH SIYOSATCHILAR</small>
           </span>
         </Link>
         <nav aria-label="Pastki menyu">
-          {NAV.map((n) => (
+          {nav.map((n) => (
             <Link key={n.href} href={n.href}>
               {n.label}
             </Link>
@@ -45,17 +47,26 @@ export default function Footer({ email, socials }: { email: string; socials: rea
               ),
             )}
           </div>
-          <div className="om" aria-label={SITE.partner}>
-            <svg viewBox="0 0 72 20" fill="none" stroke="currentColor" strokeWidth={1} aria-hidden="true">
-              <path d="M2 19h68M6 17h60M8 7h56v10M5 7l31-5 31 5M36 2V0" />
-              <path d="M13 8v9M19 8v9M25 8v9M31 8v9M41 8v9M47 8v9M53 8v9M59 8v9" />
-            </svg>
-            <span>
-              Oliy Majlis Qonunchilik palatasi
-              <br />
-              Matbuot xizmati
-            </span>
+          <div className="om" role="img" aria-label="Yoshlar Parlamenti — Oʻzbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi">
+            <BrandMark full />
           </div>
+        </div>
+      </div>
+      <div className="foot-bottom">
+        <div className="wrap">
+          <span>© {year} Yangi Avlod — Yosh siyosatchilar. Barcha huquqlar himoyalangan.</span>
+          {creatorName && (
+            <span className="creator">
+              Sayt yaratuvchisi:{" "}
+              {creatorUrl ? (
+                <a href={creatorUrl} target="_blank" rel="noopener">
+                  {creatorName}
+                </a>
+              ) : (
+                <b>{creatorName}</b>
+              )}
+            </span>
+          )}
         </div>
       </div>
     </footer>

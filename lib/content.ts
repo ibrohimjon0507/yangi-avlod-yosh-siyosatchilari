@@ -3,7 +3,7 @@
  * Bu fayl ham serverda, ham brauzerda (admin panel) ishlatiladi.
  */
 import { z } from "zod";
-import { FIELDS, REGION_DEFS, type RegionDef } from "./data";
+import { FIELDS, NAV, REGION_DEFS, type RegionDef } from "./data";
 
 const fieldSlugs = FIELDS.map((f) => f.slug) as [string, ...string[]];
 const regionSlugs = REGION_DEFS.map((r) => r.slug) as [string, ...string[]];
@@ -85,6 +85,11 @@ export const HeroSchema = z.object({
   secondaryHref: link,
 });
 
+export const QuoteSchema = z.object({
+  text: text(600, 5, "Iqtibos matni"),
+  source: z.string().trim().max(160),
+});
+
 export const StatSchema = z.object({
   value: text(10, 1, "Qiymat"),
   suffix: z.string().trim().max(3),
@@ -103,6 +108,20 @@ export const ContentSchema = z
       instagram: url,
       youtube: url,
       facebook: url,
+      /** Sayt yaratuvchisi (footerda koʻrsatiladi) */
+      creatorName: z.string().trim().max(80),
+      creatorUrl: url,
+    }),
+    /** Bosh sahifadagi boʻlimlarni yoqish/oʻchirish */
+    sections: z.object({
+      map: z.boolean(),
+      book: z.boolean(),
+    }),
+    /** “Mening Oʻzbekistonim” boʻlimidagi Prezident fikrlari */
+    president: z.object({
+      name: text(80, 2, "Prezident ismi"),
+      title: z.string().trim().max(120),
+      quotes: z.array(QuoteSchema).max(30),
     }),
     hero: HeroSchema,
     stats: z.array(StatSchema).length(4),
@@ -134,6 +153,7 @@ export type Hero = z.infer<typeof HeroSchema>;
 
 /** Hero standart rasmi (public/images/hero.jpg, 2560 × 428 px) */
 export const DEFAULT_HERO_IMAGE = "/images/hero.jpg";
+export type Quote = z.infer<typeof QuoteSchema>;
 export type Region = RegionDef & { count: number | null; image: string };
 
 /** Birinchi ishga tushirish uchun standart kontent (maketdagi namunalar) */
@@ -147,6 +167,18 @@ export const DEFAULT_CONTENT: SiteContent = {
     instagram: "",
     youtube: "",
     facebook: "",
+    creatorName: "Ibrohimjon",
+    creatorUrl: "",
+  },
+  sections: { map: true, book: true },
+  president: {
+    name: "Shavkat Mirziyoyev",
+    title: "Oʻzbekiston Respublikasi Prezidenti",
+    quotes: [
+      { text: "Yurtimizdagi 22 milliondan ziyod yoshlarimiz timsolida biz juda katta iqtisodiy, ijtimoiy va siyosiy kuchni koʻramiz.", source: "Yoshlar bilan muloqot, 2026-yil 24-fevral" },
+      { text: "Oʻzbekiston Yoshlar taraqqiyoti global indeksida eng tez surʼatlarda rivojlanayotgan davlat deb eʼlon qilingani bizga gʻurur bagʻishlaydi.", source: "Yoshlar bilan muloqot, 2026-yil 24-fevral" },
+      { text: "Faol, bilimli va tashabbuskor yoshlar — Yangi Oʻzbekistonning eng katta boyligi.", source: "" },
+    ],
   },
   hero: {
     image: "",
@@ -202,6 +234,10 @@ export const regionsOf = (c: SiteContent): Region[] =>
     return { ...d, count: r?.count ?? null, image: r?.image ?? "" };
   });
 
+/** Menyu: admin panelda yashirilgan boʻlimlar chiqarilmaydi */
+export const navOf = (c: SiteContent) =>
+  NAV.filter((n) => !((n.href === "/hududlar" && !c.sections.map) || (n.href === "/kitob" && !c.sections.book)));
+
 export const socialsOf = (c: SiteContent) =>
   (
     [
@@ -221,6 +257,8 @@ export function migrate(raw: unknown): SiteContent {
     site: { ...DEFAULT_CONTENT.site, ...(r.site ?? {}) },
     hero: { ...DEFAULT_CONTENT.hero, ...(r.hero ?? {}) },
     book: { ...DEFAULT_CONTENT.book, ...(r.book ?? {}) },
+    sections: { ...DEFAULT_CONTENT.sections, ...(r.sections ?? {}) },
+    president: { ...DEFAULT_CONTENT.president, ...(r.president ?? {}) },
     people: ((r.people ?? DEFAULT_CONTENT.people) as Partial<Person>[]).map((p) => ({ bio: "", featured: false, cardImage: "", ...p })),
     initiatives: ((r.initiatives ?? DEFAULT_CONTENT.initiatives) as Partial<Initiative>[]).map((i) => ({ body: "", ...i })),
     regions: REGION_DEFS.map((d) => {

@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
     qualities: [75, 85],
     remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
   },
+  async redirects() {
+    return [{ source: "/2030", destination: "/mening-ozbekistonim", permanent: true }];
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

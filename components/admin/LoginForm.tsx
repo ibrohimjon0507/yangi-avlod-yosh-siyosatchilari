@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { loginAction, type LoginState } from "@/app/admin/actions";
-import { Emblem } from "../Icons";
+import BrandMark from "../BrandMark";
 
 export default function LoginForm({ configured }: { configured: boolean }) {
   const [state, action, pending] = useActionState<LoginState, FormData>(loginAction, {});
@@ -11,7 +11,7 @@ export default function LoginForm({ configured }: { configured: boolean }) {
     <div className="adm-login">
       <form action={action} className="adm-login-card">
         <div className="adm-brand">
-          <Emblem gradientId="lg-a" />
+          <BrandMark />
           <span>
             <b>YANGI AVLOD</b>
             <small>Admin panel</small>

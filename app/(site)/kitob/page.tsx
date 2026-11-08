@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import { Doc, QuoteMark } from "@/components/Icons";
@@ -7,7 +8,8 @@ import { getContent } from "@/lib/store";
 export const metadata: Metadata = { title: "Kitob", description: "“Yangi Avlod: Yosh siyosatchilar” albom-kitobi." };
 
 export default async function BookPage() {
-  const { book: BOOK } = await getContent();
+  const { book: BOOK, sections } = await getContent();
+  if (!sections.book) notFound();
   return (
     <>
       <PageHero crumbs={[{ label: "Kitob" }]} kicker="Albom-kitob" title="Yangi Avlod: Yosh siyosatchilar" lead={BOOK.lead} />

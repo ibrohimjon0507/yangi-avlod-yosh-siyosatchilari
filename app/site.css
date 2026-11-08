@@ -63,8 +63,6 @@ button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
 .wrap{max-width:2100px;margin:0 auto;padding-left:max(3.75vw,16px,env(safe-area-inset-left,0px));padding-right:max(3.75vw,16px,env(safe-area-inset-right,0px))}
 
-/* ===== Chap chekkadagi naqsh (maketdagi kabi) ===== */
-.edge{position:absolute;left:0;top:0;width:calc(44 * var(--u));height:calc(35 * var(--u));background:url(/images/pattern.jpg) left top/100% auto no-repeat;z-index:55;pointer-events:none}
 
 /* ===== Header ===== */
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
@@ -327,7 +325,6 @@ footer.site{position:relative;z-index:3}
   nav.main.open{display:flex;flex-direction:column;position:absolute;left:0;right:0;top:56px;background:var(--bg);border-bottom:1px solid var(--line);padding:8px max(24px,env(safe-area-inset-left,0px)) 14px;box-shadow:var(--shadow-h)}
   nav.main.open a{height:auto;padding:12px 4px}
   nav.main.open a::after{right:auto;width:40px;bottom:6px}
-  .edge{display:none}
   .hero .wrap{flex-direction:column;padding-block:28px 64px}
   .hero-text{padding-left:0}
   .hero-quote{margin:4px 0 0 18px;max-width:440px}

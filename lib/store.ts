@@ -49,7 +49,9 @@ async function loadLatest(): Promise<SiteContent> {
 }
 
 /** Saytdagi barcha sahifalar uchun kontent (kesh bilan; saqlanganda yangilanadi) */
-export const getContent = unstable_cache(loadLatest, ["site-content-v1"], { tags: [CONTENT_TAG], revalidate: 3600 });
+const cachedLatest = unstable_cache(loadLatest, ["site-content-v3"], { tags: [CONTENT_TAG], revalidate: 3600 });
+// Keshda eski sxemadagi obyekt qolgan boʻlsa ham (yangi joylashdan keyin), har doim joriy sxemaga moslashtiriladi
+export const getContent = async (): Promise<SiteContent> => migrate(await cachedLatest());
 
 /** Admin panel uchun: keshsiz, eng soʻnggi holat */
 export const getContentFresh = loadLatest;

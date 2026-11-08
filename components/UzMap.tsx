@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useRef, useState } from "react";
 import { CITIES, COUNTRY_OUTLINE, MAP_H, MAP_W, REGION_PATHS } from "@/lib/uzmap";
@@ -175,16 +176,50 @@ function RegionRow({ region, hl, setHl }: { region: Region; hl: string | null; s
   );
 }
 
-/** Bosh sahifadagi xarita + 3 ta hudud */
+/** Bosh sahifadagi katta xarita + 3 ta asosiy hudud */
 export function HomeRegions({ regions }: { regions: Region[] }) {
   const [hl, setHl] = useState<string | null>(null);
+  const total = regions.reduce((s, r) => s + (r.count ?? 0), 0);
+  const active = regions.filter((r) => r.count).length;
   return (
-    <div className="map-wrap">
-      <UzMap regions={regions} variant="home" hl={hl} setHl={setHl} />
-      <div className="regions">
-        {regions.slice(0, 3).map((r) => (
-          <RegionRow key={r.slug} region={r} hl={hl} setHl={setHl} />
-        ))}
+    <div className="rb">
+      <div className="map-card rb-map">
+        <UzMap regions={regions} variant="full" hl={hl} setHl={setHl} />
+        <div className="map-legend">
+          <span>
+            <i />
+            Yosh siyosatchilar faol boʻlgan markazlar
+          </span>
+          <span>Hududni bosing — roʻyxat ochiladi</span>
+        </div>
+      </div>
+      <div className="rb-side">
+        <div className="rb-stats">
+          <div>
+            <b>{regions.length}</b>
+            <span>hudud</span>
+          </div>
+          {total > 0 && (
+            <div>
+              <b>{total}</b>
+              <span>yosh siyosatchi</span>
+            </div>
+          )}
+          {active > 0 && (
+            <div>
+              <b>{active}</b>
+              <span>faol hudud</span>
+            </div>
+          )}
+        </div>
+        <div className="regions rb-list">
+          {regions.slice(0, 3).map((r) => (
+            <RegionRow key={r.slug} region={r} hl={hl} setHl={setHl} />
+          ))}
+        </div>
+        <Link className="btn btn-ghost rb-all" href="/hududlar">
+          Barcha {regions.length} hudud <Chevron />
+        </Link>
       </div>
     </div>
   );

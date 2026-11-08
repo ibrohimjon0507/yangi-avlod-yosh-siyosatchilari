@@ -4,7 +4,17 @@
 .adm h1,.adm h2,.adm h3{font-family:var(--serif);color:var(--navy);margin:0}
 .adm code{font-size:.92em;background:var(--bg-card);border:1px solid var(--line);padding:1px 5px;border-radius:4px}
 .adm-brand{display:flex;align-items:center;gap:10px;color:var(--navy)}
-.adm-brand svg{width:54px;height:auto}
+.adm-brand .bmark{width:58px}
+.adm-item-thumb:empty{display:none}
+.adm-toggle{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--card);margin-top:12px;cursor:pointer}
+.adm-toggle input{position:absolute;opacity:0;width:1px;height:1px}
+.adm-switch{position:relative;width:46px;height:26px;border-radius:99px;background:var(--line);flex:none;transition:background .2s}
+.adm-switch::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.adm-toggle input:checked+.adm-switch{background:#2f9e5b}
+.adm-toggle input:checked+.adm-switch::after{transform:translateX(20px)}
+.adm-toggle input:focus-visible+.adm-switch{outline:2px solid var(--gold);outline-offset:2px}
+.adm-toggle b{display:block;color:var(--navy);font-size:15px}
+.adm-toggle small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
 .adm-brand b{display:block;font-family:var(--serif);font-weight:800;font-size:16px;line-height:1}
 .adm-brand small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:3px;font-weight:600}
 

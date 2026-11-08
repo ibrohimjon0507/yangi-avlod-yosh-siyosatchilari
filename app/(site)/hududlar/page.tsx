@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import PageHero from "@/components/PageHero";
 import { RegionsFull } from "@/components/UzMap";
 import { regionsOf } from "@/lib/content";
@@ -8,6 +9,7 @@ export const metadata: Metadata = { title: "Hududlar xaritasi", description: "Bu
 
 export default async function RegionsPage() {
   const c = await getContent();
+  if (!c.sections.map) notFound();
   return (
     <>
       <PageHero crumbs={[{ label: "Hududlar" }]} kicker="14 hudud" title="Hududlar xaritasi" lead="Butun Oʻzbekiston boʻylab yosh siyosatchilar. Xaritadagi yoki roʻyxatdagi hududni tanlang." />

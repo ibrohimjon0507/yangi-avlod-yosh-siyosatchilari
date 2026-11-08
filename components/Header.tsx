@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { NAV } from "@/lib/data";
-import { ChevronDown, Close, Emblem, Globe, Menu, Moon, SearchIcon, Sun } from "./Icons";
+import { ChevronDown, Close, Globe, Menu, Moon, SearchIcon, Sun } from "./Icons";
+import BrandMark from "./BrandMark";
 import SearchDialog from "./SearchDialog";
 import type { SearchItem } from "@/lib/search";
 
@@ -69,7 +69,9 @@ function LangMenu() {
   );
 }
 
-export default function Header({ searchItems }: { searchItems: SearchItem[] }) {
+type NavItem = { href: string; label: string };
+
+export default function Header({ searchItems, nav }: { searchItems: SearchItem[]; nav: readonly NavItem[] }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -91,18 +93,17 @@ export default function Header({ searchItems }: { searchItems: SearchItem[] }) {
 
   return (
     <>
-      <div className="edge" aria-hidden="true" />
       <header className="top">
         <div className="wrap">
           <Link className="brand" href="/" aria-label="Yangi Avlod — bosh sahifa">
-            <Emblem gradientId="lg-h" />
+            <BrandMark />
             <span>
               <b>YANGI AVLOD</b>
               <small>YOSH SIYOSATCHILAR</small>
             </span>
           </Link>
           <nav className={`main${menuOpen ? " open" : ""}`} id="mainNav" aria-label="Asosiy menyu">
-            {NAV.map((n) => (
+            {nav.map((n) => (
               <Link key={n.href} href={n.href} className={isActive(n.href) ? "active" : undefined} aria-current={isActive(n.href) ? "page" : undefined}>
                 {n.label}
               </Link>

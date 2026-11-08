@@ -15,7 +15,7 @@ npm run dev          # http://localhost:3000
 Manzil: **`/admin`** — parol bilan kiriladi.
 
 Paneldan boshqariladi: yosh siyosatchilar (surat, soha, hudud, tarjimai hol, bosh sahifada koʻrsatish),
-tashabbuslar, 2030 gʻoyalari, hududlardagi sonlar va rasmlar, statistika, kitob (PDF bilan),
+tashabbuslar, Prezident fikrlari, “Mening Oʻzbekistonim” gʻoyalari, boʻlimlarni yashirish (xarita, kitob), sayt yaratuvchisi, hududlardagi sonlar va rasmlar, statistika, kitob (PDF bilan),
 email, ijtimoiy tarmoqlar va bosh sahifadagi iqtibos.
 
 - Maʼlumotlar **Vercel Blob** omborida JSON koʻrinishida saqlanadi, rasmlar va PDF ham shu yerda.
@@ -62,7 +62,7 @@ app/
   site.css              maketga moslangan asosiy stillar + rejim tokenlari
   extra.css             tungi rejim tafsilotlari, ichki sahifalar
   yosh-siyosatchilar/   roʻyxat (URL filtrlari: ?soha= &hudud= &q=) va profil
-  sohalar/ tashabbuslar/ 2030/ hududlar/ kitob/ loyiha-haqida/
+  sohalar/ tashabbuslar/ mening-ozbekistonim/ hududlar/ kitob/ loyiha-haqida/
   fonts/                Noto Serif Display, Noto Sans (oʻz serverimizda, woff2)
 components/             Header, Footer, qidiruv (Ctrl+K), xarita, kartochkalar
 lib/content.ts          kontent sxemasi va standart qiymatlar

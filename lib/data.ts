@@ -31,7 +31,7 @@ export const NAV = [
   { href: "/yosh-siyosatchilar", label: "Yosh siyosatchilar" },
   { href: "/sohalar", label: "Sohalar" },
   { href: "/tashabbuslar", label: "Tashabbuslar" },
-  { href: "/2030", label: "2030" },
+  { href: "/mening-ozbekistonim", label: "Mening Oʻzbekistonim" },
   { href: "/hududlar", label: "Hududlar" },
   { href: "/kitob", label: "Kitob" },
   { href: "/loyiha-haqida", label: "Loyiha haqida" },

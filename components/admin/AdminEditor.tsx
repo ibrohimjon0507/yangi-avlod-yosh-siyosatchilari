@@ -5,17 +5,19 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { logoutAction, restoreAction, saveAction } from "@/app/admin/actions";
 import { FIELDS, REGION_DEFS, REGION_DEFS_ALPHA, fieldBySlug, regionDef, slugify } from "@/lib/data";
-import { DEFAULT_HERO_IMAGE, HeroSchema, IdeaSchema, InitiativeSchema, PersonSchema, type Hero, type Idea, type Initiative, type Person, type SiteContent } from "@/lib/content";
+import { DEFAULT_HERO_IMAGE, HeroSchema, IdeaSchema, InitiativeSchema, PersonSchema, QuoteSchema, type Hero, type Idea, type Initiative, type Person, type Quote, type SiteContent } from "@/lib/content";
 import type { Version } from "@/lib/store";
-import { Emblem } from "../Icons";
+import BrandMark from "../BrandMark";
 
-type Tab = "hero" | "people" | "initiatives" | "ideas" | "regions" | "stats" | "book" | "settings" | "history";
+type Tab = "hero" | "sections" | "people" | "initiatives" | "president" | "ideas" | "regions" | "stats" | "book" | "settings" | "history";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "hero", label: "Bosh qism (Hero)" },
+  { id: "sections", label: "Boʻlimlar (koʻrsatish)" },
   { id: "people", label: "Yosh siyosatchilar" },
   { id: "initiatives", label: "Tashabbuslar" },
-  { id: "ideas", label: "2030 gʻoyalari" },
+  { id: "president", label: "Prezident fikrlari" },
+  { id: "ideas", label: "Mening Oʻzbekistonim" },
   { id: "regions", label: "Hududlar" },
   { id: "stats", label: "Statistika" },
   { id: "book", label: "Kitob" },
@@ -162,13 +164,13 @@ export default function AdminEditor({ initial, versions, storeReady }: { initial
 
   const set = <K extends keyof SiteContent>(k: K, v: SiteContent[K]) => setC((p) => ({ ...p, [k]: v }));
 
-  const counts: Partial<Record<Tab, number>> = { people: c.people.length, initiatives: c.initiatives.length, ideas: c.ideas.length };
+  const counts: Partial<Record<Tab, number>> = { people: c.people.length, initiatives: c.initiatives.length, ideas: c.ideas.length, president: c.president.quotes.length };
 
   return (
     <div className="adm-shell">
       <header className="adm-top">
         <Link href="/admin" className="adm-brand">
-          <Emblem gradientId="lg-a2" />
+          <BrandMark />
           <span>
             <b>YANGI AVLOD</b>
             <small>Admin panel</small>
@@ -210,6 +212,68 @@ export default function AdminEditor({ initial, versions, storeReady }: { initial
 
         <section className="adm-main">
           {tab === "hero" && <HeroEditor hero={c.hero} onChange={(v) => set("hero", v)} site={c.site} onSite={(v) => set("site", v)} storeReady={storeReady} goStats={() => setTab("stats")} />}
+
+          {tab === "sections" && (
+            <div className="adm-panel narrow">
+              <h2>Boʻlimlar</h2>
+              <p className="adm-sub">Oʻchirilgan boʻlim bosh sahifadan, menyudan, qidiruvdan va sayt xaritasidan yashiriladi; uning alohida sahifasi ham ochilmaydi. Maʼlumotlar oʻchmaydi — qayta yoqsangiz, hammasi joyida qaytadi.</p>
+              {(
+                [
+                  ["map", "Hududlar xaritasi", "Bosh sahifadagi katta xarita va “Hududlar” sahifasi"],
+                  ["book", "Kitob", "Bosh sahifadagi kitob boʻlimi va “Kitob” sahifasi"],
+                ] as const
+              ).map(([k, label, sub]) => (
+                <label className="adm-toggle" key={k}>
+                  <input type="checkbox" role="switch" checked={c.sections[k]} onChange={(e) => set("sections", { ...c.sections, [k]: e.target.checked })} />
+                  <span className="adm-switch" aria-hidden="true" />
+                  <span>
+                    <b>{label}</b>
+                    <small>{c.sections[k] ? "Saytda koʻrinadi" : "Yashirilgan"} · {sub}</small>
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
+
+          {tab === "president" && (
+            <>
+              <div className="adm-panel narrow">
+                <h2>Prezident fikrlari</h2>
+                <p className="adm-sub">Bosh sahifadagi “Mening Oʻzbekistonim” boʻlimida chiqadi. Birinchi fikr katta koʻrinishda, qolganlari yonida roʻyxat boʻlib turadi. Faqat rasmiy manbada aynan aytilgan soʻzlarni kiriting va manbasini yozing.</p>
+                <div className="adm-grid2">
+                  <Field label="Ism">
+                    <input value={c.president.name} onChange={(e) => set("president", { ...c.president, name: e.target.value })} />
+                  </Field>
+                  <Field label="Lavozimi">
+                    <input value={c.president.title} onChange={(e) => set("president", { ...c.president, title: e.target.value })} />
+                  </Field>
+                </div>
+              </div>
+              <ListEditor<Quote>
+                title="Iqtiboslar"
+                hint="Tartibni ↑ ↓ tugmalari bilan oʻzgartiring. Qoʻshtirnoqlarsiz yozing."
+                items={c.president.quotes}
+                onChange={(v) => set("president", { ...c.president, quotes: v })}
+                open={open}
+                setOpen={setOpen}
+                make={() => ({ text: "", source: "" })}
+                thumb={() => ""}
+                primary={(q) => (q.text ? (q.text.length > 90 ? `${q.text.slice(0, 90)}…` : q.text) : "Yangi iqtibos")}
+                secondary={(q) => q.source || "Manba koʻrsatilmagan"}
+                validate={(q) => issuesOf(QuoteSchema, q)}
+                form={(q, up, err) => (
+                  <>
+                    <Field label="Iqtibos matni" error={err.text}>
+                      <textarea rows={4} value={q.text} onChange={(e) => up({ text: e.target.value })} />
+                    </Field>
+                    <Field label="Manba" hint="Masalan: Yoshlar bilan muloqot, 2026-yil 24-fevral" error={err.source}>
+                      <input value={q.source} onChange={(e) => up({ source: e.target.value })} />
+                    </Field>
+                  </>
+                )}
+              />
+            </>
+          )}
 
           {tab === "people" && (
             <ListEditor<Person>
@@ -330,8 +394,8 @@ export default function AdminEditor({ initial, versions, storeReady }: { initial
 
           {tab === "ideas" && (
             <ListEditor<Idea>
-              title="2030 — Mening Oʻzbekistonim"
-              hint="Bosh sahifada birinchi 3 tasi chiqadi."
+              title="Mening Oʻzbekistonim — yoshlar gʻoyalari"
+              hint="Bosh sahifada Prezident fikrlari ostida birinchi 3 tasi chiqadi."
               items={c.ideas}
               onChange={(v) => set("ideas", v)}
               open={open}
@@ -448,6 +512,16 @@ export default function AdminEditor({ initial, versions, storeReady }: { initial
                 <input type="email" value={c.site.email} onChange={(e) => set("site", { ...c.site, email: e.target.value })} />
               </Field>
               <p className="adm-sub">Bosh sahifadagi iqtibos “Bosh qism (Hero)” boʻlimiga koʻchirildi.</p>
+              <h3>Sayt yaratuvchisi</h3>
+              <p className="adm-sub">Sayt pastki qismida “Sayt yaratuvchisi: …” deb chiqadi.</p>
+              <div className="adm-grid2">
+                <Field label="Ism familiya">
+                  <input value={c.site.creatorName} onChange={(e) => set("site", { ...c.site, creatorName: e.target.value })} />
+                </Field>
+                <Field label="Havola (ixtiyoriy)" hint="Masalan: Telegram yoki portfolio, https:// bilan">
+                  <input type="url" placeholder="https://…" value={c.site.creatorUrl} onChange={(e) => set("site", { ...c.site, creatorUrl: e.target.value })} />
+                </Field>
+              </div>
               <h3>Ijtimoiy tarmoqlar</h3>
               <p className="adm-sub">Toʻliq havolani kiriting (https:// bilan). Boʻsh qolganlari saytda faol boʻlmaydi.</p>
               {(["telegram", "instagram", "youtube", "facebook"] as const).map((k) => (
